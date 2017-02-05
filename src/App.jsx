@@ -2,52 +2,55 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import * as courseActions from './actions/courseActions'
 
-import 'bootstrap/dist/css/bootstrap.css'
 
+import { Grid, Row, Col, Button, FormGroup, FormControl } from 'react-bootstrap'
 import './App.scss'
 
 class App extends Component {
 
-    state = { 
-        course: { title: '' } 
+    state = {
+        course: { title: '' }
     }
 
     onTitleChange = (evt) => {
         const course = this.state.course
         course.title = evt.target.value
-        this.setState({course: course})
+        this.setState({ course: course })
     }
 
     onClickSave = () => {
-        this.props.dispatch( courseActions.createCourse(this.state.course) )
+        this.props.createCourse(this.state.course)
     }
 
     courseRow = (course, index) => {
-        return <div key={index}>{ course.title }</div>
+        return <div key={index}>{course.title}</div>
     }
 
     render() {
         return (
-            <div>
-                <h1>Courses</h1>
-                {this.props.courses.map(this.courseRow)}
-                <h2>Add Course</h2>
-                <input 
-                    type="text"
-                    onChange={this.onTitleChange}
-                    value={this.state.course.title} />
-                <input
-                    type="submit"
-                    value="Save"
-                    onClick={this.onClickSave} />
-            </div>
+            <Grid>
+                <Row>
+                    <Col xs={12}>
+                        <h1>Courses</h1>
+                        {this.props.courses.map(this.courseRow)}
+                        <h2>Add Course</h2>
+                        <FormGroup>
+                            <FormControl
+                                type="text"
+                                value={this.state.course.title}
+                                onChange={this.onTitleChange} />
+                        </FormGroup>
+                        <Button onClick={this.onClickSave}>Save</Button>
+                    </Col>
+                </Row>
+            </Grid>
         )
     }
-    
+
 }
 
 App.propTypes = {
-    dispatch: PropTypes.func.isRequired,
+    createCourse: PropTypes.func.isRequired,
     courses: PropTypes.array.isRequired
 }
 
@@ -57,4 +60,10 @@ function mapStateToProps(state, ownProps) {
     }
 }
 
-export default connect(mapStateToProps)(App)
+function mapDispatchToProps(dispatch) {
+    return {
+        createCourse: course => dispatch(courseActions.createCourse(course))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)
