@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import * as courseActions from './actions/courseActions'
 
 
@@ -19,7 +20,7 @@ class App extends Component {
     }
 
     onClickSave = () => {
-        this.props.createCourse(this.state.course)
+        this.props.actions.createCourse(this.state.course)      
     }
 
     courseRow = (course, index) => {
@@ -50,20 +51,11 @@ class App extends Component {
 }
 
 App.propTypes = {
-    createCourse: PropTypes.func.isRequired,
+    actions: PropTypes.object.isRequired,
     courses: PropTypes.array.isRequired
 }
 
-function mapStateToProps(state, ownProps) {
-    return {
-        courses: state.courses
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        createCourse: course => dispatch(courseActions.createCourse(course))
-    }
-}
+const mapStateToProps = (state, ownProps) => ({ courses: state.courses })
+const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(courseActions, dispatch) })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)
